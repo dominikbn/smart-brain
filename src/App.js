@@ -1,5 +1,4 @@
 import React from 'react';
-import Clarifai from 'clarifai';
 import Particles from 'react-particles-js';
 import './App.css';
 import Navigation from './components/navigation/Navigation';
@@ -9,15 +8,13 @@ import ImageLinkForm from './components/imagelinkform/ImageLinkForm';
 import FaceRecognition from './components/facerecognition/FaceRecognition';
 import SignIn from './components/signin/SignIn';
 import Register from './components/register/Register';
+import Footer from './components/footer/Footer';
+import Credits from './components/credits/Credits';
 
 /* Images:
 https://i0.web.de/image/688/33679688,pd=3/donald-trump-luegen-falschbehauptungen-usa-praesid.jpg
 https://www.welt.de/img/bildergalerien/mobile185211106/7042504707-ci102l-w1024/FC-Schalke-04-Borussia-Dortmund.jpg
 */
-
-const clarifaiApp = new Clarifai.App({
-  apiKey: 'ca1c72aa19f8471da18fbda80cd8fafc'
-});
 
 // options for particles.js
 const particlesOptions = {
@@ -41,23 +38,25 @@ const particlesOptions = {
   }
 }
 
+const initialState = {
+  input: '',  // content of URL input field
+  imageUrl: '',  // last URL used for face detection
+  faceLocations: [],  // positions of faces in the image
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
+}
+
 class App extends React.Component {
   constructor() {
     super();
-    this.state = {
-      input: '',  // content of URL input field
-      imageUrl: '',  // last URL used for face detection
-      faceLocations: [],  // positions of faces in the image
-      route: 'signin',
-      isSignedIn: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
-    }
+    this.state = initialState;
   }
 
   loadUser = (userData) => {
@@ -109,20 +108,23 @@ class App extends React.Component {
     // save URL of the image
     this.setState({ imageUrl: this.state.input });
     // start face detection
-    clarifaiApp.models
-      .predict(
-        Clarifai.FACE_DETECT_MODEL,
-        this.state.input
-      )
+    fetch('http://localhost:3000/imageurl', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: this.state.input
+      })
+    })
+      .then(response => response.json())
       .then(response => {
         // update entries counter on server
         if (response) {
-          fetch('http://localhost:3001/image', {
+          fetch('http://localhost:3000/image', {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               id: this.state.user.id,
-              password: this.state.signInPassword
+              // password: this.state.signInPassword
             })
           })
             .then(response => response.json())
@@ -130,7 +132,8 @@ class App extends React.Component {
               this.setState(Object.assign(this.state.user, {
                 entries: count
               }))
-            });
+            })
+            .catch(console.log);
         }
         // save locations of detected faces
         this.setfaceLocations(this.calculateFaceLocations(response));
@@ -140,7 +143,7 @@ class App extends React.Component {
 
   onRouteChange = (route) => {
     if (route === ('signin' || 'register')) {
-      this.setState({ isSignedIn: false })
+      this.setState(initialState)
     } else if (route === 'home') {
       this.setState({ isSignedIn: true })
     }
@@ -180,13 +183,10 @@ class App extends React.Component {
       loadUser={this.loadUser}
     />;
 
-
-    if (route === 'home') {
-      // Home Screen
-      return (
-        <div>
-          {particles}
-          {navigation}
+    let appContent = <div></div>;
+    switch (route) {
+      case 'home':
+        appContent = <div className='app-content'>
           <Logo />
           <Rank
             name={this.state.user.name}
@@ -194,41 +194,38 @@ class App extends React.Component {
           />
           {imageLinkForm}
           {faceRecognition}
-        </div>
-      );
-    } else if (route === 'signin') {
-      // Login Screen
-      return (
-        <div>
-          {particles}
-          {navigation}
+        </div>;
+        break;
+      case 'signin':
+        appContent = <div className='app-content'>
           {signin}
-        </div>
-      );
-    } else if (route === 'register') {
-      // Register Screen
-      return (
-        <div>
-          {particles}
-          {navigation}
+        </div>;
+        break;
+      case 'register':
+        appContent = <div className='app-content'>
           {register}
-        </div>
-      );
-    } else {
-      return <p>This page doesn't exist.</p>;
+        </div>;
+        break;
+      case 'credits':
+        appContent = <div className='app-content'>
+          <Credits />
+        </div>;
+        break;
+      default:
+        appContent = <p>This page doesn't exist.</p>
     }
+
+    return (
+      <div className='app'>
+        {particles}
+        {navigation}
+        {appContent}
+        <Footer
+          onRouteChange={this.onRouteChange}
+        />
+      </div>
+    );
   }
 }
 
 export default App;
-
-// Credits:
-// <div>
-//   Icons made by <a
-//     href="https://www.flaticon.com/authors/becris"
-//     title="Becris">Becris</a> from <a
-//       href="https://www.flaticon.com/"
-//       title="Flaticon">www.flaticon.com</a> is licensed by <a
-//         href="http://creativecommons.org/licenses/by/3.0/"
-//         title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-// </div>

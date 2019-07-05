@@ -5,7 +5,7 @@ const FaceRecognition = ({ imageUrl, faceLocations }) => {
   const boundingBoxes = faceLocations.map((faceLocation, i) => {
     return (
       <div
-        className='bounding-box'
+        className='bounding-box absolute'
         key={i}
         style={{
           top: faceLocation.top,
@@ -18,14 +18,14 @@ const FaceRecognition = ({ imageUrl, faceLocations }) => {
   });
 
   return (
-    <div className='flex justify-center'>
-      <div className='absolute mt3'>
+    <div className='flex justify-center ma3'>
+      <div className='relative'>
         <img
           id='inputimage'
+          className='db'
           src={imageUrl}
           alt=''
-          width='600px'
-          height='auto'
+          width='700px'
         />
         {boundingBoxes}
       </div>
