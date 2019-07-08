@@ -1,6 +1,10 @@
 import React from 'react';
 
-const Credits = () => {
+const Credits = ({ onRouteChange, isSignedIn }) => {
+  const onBackButton = () => {
+    isSignedIn ? onRouteChange('home') : onRouteChange('signin');
+  }
+
   return (
     <div className='f5 h-100 flex flex-column justify-center items-center'>
       <h1 className='f4 b'>Credits:</h1>
@@ -24,6 +28,11 @@ const Credits = () => {
           rel="noopener noreferrer"
         >CC 3.0 BY
         </a>
+      </p>
+      <p className='underline dim pointer'
+        onClick={onBackButton}
+      >
+        {'← Back'}
       </p>
     </div>
   );

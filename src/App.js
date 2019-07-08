@@ -69,6 +69,7 @@ class App extends React.Component {
         joined: userData.joined
       }
     });
+    this.setState({isSignedIn: true});
   }
 
   calculateFaceLocations = (apiData) => {
@@ -117,15 +118,12 @@ class App extends React.Component {
     })
       .then(response => response.json())
       .then(response => {
-        // update entries counter on server
+        // update entries counter on server db
         if (response) {
           fetch('http://localhost:3000/image', {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id: this.state.user.id,
-              // password: this.state.signInPassword
-            })
+            body: JSON.stringify({ id: this.state.user.id })
           })
             .then(response => response.json())
             .then(count => {
@@ -143,9 +141,7 @@ class App extends React.Component {
 
   onRouteChange = (route) => {
     if (route === ('signin' || 'register')) {
-      this.setState(initialState)
-    } else if (route === 'home') {
-      this.setState({ isSignedIn: true })
+      this.setState(initialState);
     }
     this.setState({ route: route });
   }
@@ -208,11 +204,14 @@ class App extends React.Component {
         break;
       case 'credits':
         appContent = <div className='app-content'>
-          <Credits />
+          <Credits
+            isSignedIn={isSignedIn}
+            onRouteChange={this.onRouteChange}
+          />
         </div>;
         break;
       default:
-        appContent = <p>This page doesn't exist.</p>
+        appContent = <p>This page does not exist.</p>
     }
 
     return (
