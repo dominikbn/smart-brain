@@ -16,6 +16,21 @@ https://i0.web.de/image/688/33679688,pd=3/donald-trump-luegen-falschbehauptungen
 https://www.welt.de/img/bildergalerien/mobile185211106/7042504707-ci102l-w1024/FC-Schalke-04-Borussia-Dortmund.jpg
 */
 
+const initialState = {
+  input: '',  // content of URL input field
+  imageUrl: '',  // last URL used for face detection
+  faceLocations: [],  // positions of faces in the image
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
+}
+
 // options for particles.js
 const particlesOptions = {
   particles: {
@@ -35,21 +50,6 @@ const particlesOptions = {
     move: {
       speed: .5
     }
-  }
-}
-
-const initialState = {
-  input: '',  // content of URL input field
-  imageUrl: '',  // last URL used for face detection
-  faceLocations: [],  // positions of faces in the image
-  route: 'signin',
-  isSignedIn: false,
-  user: {
-    id: '',
-    name: '',
-    email: '',
-    entries: 0,
-    joined: ''
   }
 }
 
@@ -172,7 +172,7 @@ class App extends React.Component {
     const signin = <SignIn
       onRouteChange={this.onRouteChange}
       loadUser={this.loadUser}
-    />
+    />;
 
     const register = <Register
       onRouteChange={this.onRouteChange}
