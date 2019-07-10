@@ -14,6 +14,8 @@ import Credits from './components/credits/Credits';
 /* Images:
 https://i0.web.de/image/688/33679688,pd=3/donald-trump-luegen-falschbehauptungen-usa-praesid.jpg
 https://www.welt.de/img/bildergalerien/mobile185211106/7042504707-ci102l-w1024/FC-Schalke-04-Borussia-Dortmund.jpg
+https://e6.365dm.de/19/07/768x432/skysport_de-kroos-real-madrid_4709687.jpg?20190704132724
+https://cdn1.spiegel.de/images/image-964935-860_poster_16x9-vfta-964935.jpg
 */
 
 const initialState = {

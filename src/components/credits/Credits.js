@@ -6,9 +6,9 @@ const Credits = ({ onRouteChange, isSignedIn }) => {
   }
 
   return (
-    <div className='f5 h-100 flex flex-column justify-center items-center'>
+    <div className='f5 h-100 flex flex-column justify-center items-center ma3'>
       <h1 className='f4 b'>Credits:</h1>
-      <p>
+      <p className='tc'>
         Icons made by <a
           href="https://www.flaticon.com/authors/becris"
           title="Becris"
