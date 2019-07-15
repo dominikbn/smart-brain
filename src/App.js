@@ -10,6 +10,7 @@ import SignIn from './components/signin/SignIn';
 import Register from './components/register/Register';
 import Footer from './components/footer/Footer';
 import Credits from './components/credits/Credits';
+import ImageContent from './imagecontent/ImageContent';
 
 /* Images:
 https://i0.web.de/image/688/33679688,pd=3/donald-trump-luegen-falschbehauptungen-usa-praesid.jpg
@@ -71,7 +72,7 @@ class App extends React.Component {
         joined: userData.joined
       }
     });
-    this.setState({isSignedIn: true});
+    this.setState({ isSignedIn: true });
   }
 
   calculateFaceLocations = (apiData) => {
@@ -171,6 +172,11 @@ class App extends React.Component {
       faceLocations={faceLocations}
     />;
 
+    const imageContent = <ImageContent
+      faceLocations={faceLocations}
+      imageUrl={imageUrl}
+    />;
+
     const signin = <SignIn
       onRouteChange={this.onRouteChange}
       loadUser={this.loadUser}
@@ -192,6 +198,7 @@ class App extends React.Component {
           />
           {imageLinkForm}
           {faceRecognition}
+          {imageContent}
         </div>;
         break;
       case 'signin':
