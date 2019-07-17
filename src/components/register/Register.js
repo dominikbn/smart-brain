@@ -1,4 +1,5 @@
 import React from 'react';
+import { SERVER_URL } from '../../constants';
 
 class Register extends React.Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class Register extends React.Component {
   }
 
   onSubmitSignIn = () => {
-    fetch('https://lit-brook-23362.herokuapp.com/register', {
+    fetch(SERVER_URL + 'register', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
