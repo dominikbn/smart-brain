@@ -6,7 +6,8 @@ class SignIn extends React.Component {
     super(props);
     this.state = {
       signInEmail: '',
-      signInPassword: ''
+      signInPassword: '',
+      isSubmitting: false
     }
   }
 
@@ -19,6 +20,7 @@ class SignIn extends React.Component {
   }
 
   onSubmitSignIn = () => {
+    this.setState({ isSubmitting: true });
     fetch(SERVER_URL + 'signin', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -27,13 +29,21 @@ class SignIn extends React.Component {
         password: this.state.signInPassword
       })
     })
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          this.setState({ isSubmitting: false });
+          throw new Error('HTTP response error. Cannot sign in.');
+        }
+      })
       .then(user => {
         if (user.id) {
           this.props.loadUser(user);
           this.props.onRouteChange('home');
         }
-      });
+      })
+      .catch(console.log);
   }
 
   render() {
@@ -67,10 +77,14 @@ class SignIn extends React.Component {
             </fieldset>
             <div className="">
               <input
-                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+                className={`
+                  b ph3 pv2 input-reset ba bg-transparent f6 dib
+                  ${this.state.isSubmitting ? 'b--gray' : 'b--black grow pointer'}
+                `}
                 type="submit"
                 value="Sign in"
                 onClick={this.onSubmitSignIn}
+                disabled={this.state.isSubmitting}
               />
             </div>
             <div className="lh-copy tr">

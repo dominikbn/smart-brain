@@ -7,7 +7,8 @@ class Register extends React.Component {
     this.state = {
       email: '',
       password: '',
-      name: ''
+      name: '',
+      isSubmitting: false
     }
   }
 
@@ -24,22 +25,31 @@ class Register extends React.Component {
   }
 
   onSubmitSignIn = () => {
+    this.setState({ isSubmitting: true });
     fetch(SERVER_URL + 'register', {
       method: 'post',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: this.state.email,
         password: this.state.password,
         name: this.state.name
       })
     })
-    .then(response => response.json())
-    .then(user => {
-      if (user.id) {
-        this.props.loadUser(user);
-        this.props.onRouteChange('home');
-      }
-    });
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          this.setState({ isSubmitting: false });
+          throw new Error('HTTP response error. Cannot register.');
+        }
+      })
+      .then(user => {
+        if (user.id) {
+          this.props.loadUser(user);
+          this.props.onRouteChange('home');
+        }
+      })
+      .catch(console.log);;
   }
 
   render() {
@@ -82,10 +92,14 @@ class Register extends React.Component {
             </fieldset>
             <div className="">
               <input
-                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+                className={`
+                  b ph3 pv2 input-reset ba bg-transparent f6 dib
+                  ${this.state.isSubmitting ? 'b--gray' : 'b--black grow pointer'}
+                `}
                 type="submit"
                 value="Register"
                 onClick={this.onSubmitSignIn}
+                disabled={this.state.isSubmitting}
               />
             </div>
           </div>

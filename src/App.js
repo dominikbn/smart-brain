@@ -133,6 +133,10 @@ class App extends React.Component {
     // save URL of the image
     this.setState({ imageUrl: this.state.input });
 
+    // delete previous face frames and content information
+    this.setState({ faceLocations: [] });
+    this.setState({ celebrities: [] });
+
     // start face detection
     fetch(SERVER_URL + 'image-face', {
       method: 'post',
@@ -141,7 +145,12 @@ class App extends React.Component {
         input: this.state.input
       })
     })
-      .then(response => response.json())
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('HTTP response error. Cannot detect faces.');
+      })
       .then(response => {
         // update entries counter on server database
         if (response) {

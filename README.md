@@ -6,7 +6,8 @@ A React app for face recognition.
 * Identifies famous people
 * Stores user data and image count in server-side database
 
-### Try it out:
-Run `npm start` in the command line or click the link below.
+### Links:
 
-#### [Smart Brain GUI](https://smart-brain-gui.herokuapp.com)
+Start App: [Smart Brain](https://smart-brain-gui.herokuapp.com)
+
+Backend: [smart-brain-api](https://github.com/dominikbn/smart-brain-api)
